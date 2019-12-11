@@ -1,4 +1,4 @@
-#include "Window.h"
+#include "App.h"
 
 // the WindowProc function prototype
 LRESULT CALLBACK WindowProc(HWND hWnd,
@@ -12,32 +12,16 @@ int WINAPI WinMain(HINSTANCE hInstance,
     LPSTR lpCmdLine,
     int nShowCmd)
 {
-    int windowWidth = 640;
-    int windowHeight = 480;
-    const auto pClassName = L"Game";
-
-    //Create Window, handle message inside
-    Window wnd(windowWidth, windowHeight, pClassName);
-
-
-   // this struct holds Windows event messages
-    MSG msg;
-    BOOL gResult;
-    // wait for the next message in the queue, store the result in 'msg'
-    while ((gResult = GetMessage(&msg, NULL, 0, 0)) > 0)
+    try 
     {
-        // translate keystroke messages into the right format
-        TranslateMessage(&msg);
-
-        // send the message to the WindowProc function
-        DispatchMessage(&msg);
+        return App{}.Go();
     }
-    
-    if (gResult == -1)
+    catch (std::exception& e)
     {
-        return -1;
+        MessageBoxA(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
     }
-
-    // return this part of the WM_QUIT message to Windows
-    return msg.wParam;
+    catch (...)
+    {
+        MessageBoxA(nullptr, "Upss", "Unknow Exception", MB_OK | MB_ICONEXCLAMATION);
+    }
 }

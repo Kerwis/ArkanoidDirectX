@@ -2,6 +2,7 @@
 #include <windows.h>    // include the basic windows header file
 #include <windowsx.h>
 #include "Keyboard.h"
+#include <optional>
 
 class Window
 {
@@ -9,6 +10,7 @@ public:
 	Window(const Window&) = delete;
 	Window(int width, int height, LPCWSTR name) noexcept;
 	~Window();
+	static std::optional<int> ProcessMessages();
 	Window& operator=(const Window&) = delete;
 	Keyboard kbd;
 

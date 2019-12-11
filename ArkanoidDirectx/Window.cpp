@@ -52,6 +52,28 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
     return pWnd-> HandleMsg(hWnd, msg, wParam, lParam);
 }
 
+std::optional<int> Window::ProcessMessages()
+{
+    // this struct holds Windows event messages
+    MSG msg;
+    // wait for the next message in the queue, store the result in 'msg'
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+    {
+        // check quit signal
+        if (msg.message == WM_QUIT)
+        {
+            return msg.wParam;
+        }
+
+        // translate keystroke messages into the right format
+        TranslateMessage(&msg);
+        // send the message to the WindowProc function
+        DispatchMessage(&msg);
+    }
+
+    return {};
+}
+
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
     //std::string stemp;
@@ -69,16 +91,14 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
             break;
     case WM_KEYDOWN:
-        if (!lParam & 0x40000000)
+        //After hold key autorepete prevent (optional)
+        if (!(lParam & 0x40000000))//mask for bit 30
         {
             kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
         }
         break;
     case WM_KEYUP:
         kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
-        break;
-    case WM_CHAR:
-       // OutputDebugString((L"Pupa " + static_cast<unsigned char>(wParam) + '\n'));
         break;
     }
 
