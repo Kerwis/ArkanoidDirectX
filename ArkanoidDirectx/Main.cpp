@@ -24,4 +24,5 @@ int WINAPI WinMain(HINSTANCE hInstance,
     {
         MessageBoxA(nullptr, "Upss", "Unknow Exception", MB_OK | MB_ICONEXCLAMATION);
     }
+    return -1;
 }

@@ -22,8 +22,10 @@ Window::Window(int width, int height, LPCWSTR name) noexcept
         WindowClass::GetInstance(),    // application handle
         this);
 
-    // display the window on the screen
+    // newly created windows start off as hidden
     ShowWindow(hWnd, SW_SHOWDEFAULT);
+    // create graphics object
+    pGfx = std::make_unique<Graphics>(hWnd);
 }
 
 Window::~Window()
@@ -72,6 +74,11 @@ std::optional<int> Window::ProcessMessages()
     }
 
     return {};
+}
+
+Graphics& Window::Gfx()
+{
+    return *pGfx;
 }
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept

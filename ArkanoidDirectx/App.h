@@ -4,6 +4,11 @@
 
 class App
 {
+private:
+	int windowWidth = 640;
+	int windowHeight = 480;
+	const LPCWSTR WindowName = L"Arkanoid";
+
 public:
 	App();
 	
@@ -14,8 +19,4 @@ private:
 	void DoFrame();
 	Window wnd;
 	GameTimer timer;
-
-	int windowWidth = 640;
-	int windowHeight = 480;
-	const LPCWSTR pClassName = L"Game";
 };

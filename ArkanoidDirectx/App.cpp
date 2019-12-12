@@ -2,7 +2,7 @@
 
 App::App()
 	:
-	wnd(windowWidth, windowHeight, pClassName)
+	wnd(windowWidth, windowHeight, WindowName)
 {}
 
 int App::Go()
@@ -20,5 +20,5 @@ int App::Go()
 
 void App::DoFrame()
 {
-
+	wnd.Gfx().EndFrame();
 }

@@ -2,17 +2,20 @@
 #include <windows.h>    // include the basic windows header file
 #include <windowsx.h>
 #include "Keyboard.h"
+#include "Graphics.h"
 #include <optional>
+#include <memory>
 
 class Window
 {
 public:
-	Window(const Window&) = delete;
 	Window(int width, int height, LPCWSTR name) noexcept;
 	~Window();
-	static std::optional<int> ProcessMessages();
+	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
+	static std::optional<int> ProcessMessages();
 	Keyboard kbd;
+	Graphics& Gfx();
 
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
@@ -21,6 +24,7 @@ private:
 	int width;
 	int height;
 	HWND hWnd;
+	std::unique_ptr<Graphics> pGfx;
 
 	class WindowClass
 	{
