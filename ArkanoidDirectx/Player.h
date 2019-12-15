@@ -1,8 +1,8 @@
 #pragma once
-#include "Box.h"
+#include "MoveableBox.h"
 #include "Keyboard.h"
 
-class Player : public Box
+class Player : public MoveableBox
 {
 public:
 	Player(Graphics& gfx, std::shared_ptr<Keyboard> input);
@@ -13,15 +13,10 @@ public:
 	void Update(float dt) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
+	void CheckBounce(Vector2 bounds);
 	Vector2 GetPos();
 	float GetSize();
 private:
-	// positional
-	float x = 0;
-	float y = -20.0f;
-
-	// speed (delta/s)
-	float speed = 25;
 	float size = 5;
 
 	std::shared_ptr<Keyboard> kbd;

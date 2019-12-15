@@ -1,12 +1,6 @@
 #pragma once
 #include "Drawable.h"
 
-struct Vector2
-{
-	float x;
-	float y;
-};
-
 class Box : public Drawable
 {
 public:

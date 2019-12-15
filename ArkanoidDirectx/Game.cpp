@@ -9,12 +9,18 @@ Game::Game(Graphics& gfx, std::shared_ptr<Keyboard> input)
 void Game::Update(float dt) noexcept
 {
 	player->Update(dt);
+	player->CheckBounce(bounds);
 	ball->Update(dt);
-	ball->CheckBounce(player->GetPos(), player->GetSize());
+	ball->CheckBounce(player->GetPos(), player->GetSize(), bounds);
 }
 
 void Game::Draw(Graphics& gfx) const noexcept
 {
 	player->Draw(gfx);
 	ball->Draw(gfx);
+}
+
+Vector2 Game::GetBounds()
+{
+	return bounds;
 }

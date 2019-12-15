@@ -1,7 +1,7 @@
 #pragma once
-#include "Box.h"
+#include "MoveableBox.h"
 
-class Ball : public Box
+class Ball : public MoveableBox
 {
 public:
 	Ball(Graphics& gfx);
@@ -9,15 +9,10 @@ public:
 	Ball(const Ball&) = delete;
 	Ball& operator=(const Ball&) = delete;
 
-	void CheckBounce(Vector2 pos, float size);
+	void CheckBounce(Vector2 pos, float size, Vector2 wall);
 	void Update(float dt) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
 private:
-	// positional
-	float x = 0;
-	float y = -20.0f;
 
-	// speed (delta/s)
-	float speed = 15;
 };

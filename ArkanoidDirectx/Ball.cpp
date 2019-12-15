@@ -1,35 +1,41 @@
 #include "Ball.h"
 
 Ball::Ball(Graphics& gfx)
-	: Box(gfx)
+	: MoveableBox(gfx)
 {
-
+	speed = { 0,-5 };
 }
 
-void Ball::CheckBounce(Vector2 pos, float size)
+void Ball::CheckBounce(Vector2 pos, float size, Vector2 wall)
 {
 	//Deck surface
-	if (std::abs(pos.y+1-y) < 0.05 // y pos
-		&& x > pos.x - size && x < pos.x + size)// x pos
+	if (std::abs(pos.y+1-position.y) < 0.05 // y pos
+		&& position.x > pos.x - size && position.x < pos.x + size)// x pos
 	{
-		speed *= -1;
+		speed.y *= -1;
+	}
+
+	//Wall
+	if (position.x < -wall.x || position.x > wall.x)
+	{
+		speed.x * -1;
+	}
+	if (position.y < -wall.y)
+	{
+		position.y = 0;
+	}
+	if (position.y > 1)
+	{
+		speed.y *= -1;
 	}
 }
 
 void Ball::Update(float dt) noexcept
 {
-	y -= dt * speed;
-	if (y < -25)
-	{
-		y = 0;
-	}
-	if (y > 1)
-	{
-		speed *= -1;
-	}
+	position += speed * dt;
 }
 
 DirectX::XMMATRIX Ball::GetTransformXM() const noexcept
 {
-	return DirectX::XMMatrixTranslation(x, y, 40.0f);
+	return DirectX::XMMatrixTranslation(position.x, position.y, 40.0f);
 }

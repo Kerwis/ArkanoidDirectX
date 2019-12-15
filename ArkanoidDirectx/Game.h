@@ -13,9 +13,11 @@ public:
 
 	void Update(float dt) noexcept;
 	void Draw(Graphics& gfx) const noexcept;
+	Vector2 GetBounds();
 
 	std::unique_ptr<Player> player;
 	std::unique_ptr<Ball> ball;
 
 private:
+	Vector2 bounds = { 30, 25 };
 };

@@ -90,6 +90,9 @@
     <ClCompile Include="Ball.cpp">
       <Filter>Pliki źródłowe\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="MoveableBox.cpp">
+      <Filter>Pliki źródłowe\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -150,6 +153,9 @@
       <Filter>Pliki nagłówkowe\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Ball.h">
+      <Filter>Pliki nagłówkowe\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveableBox.h">
       <Filter>Pliki nagłówkowe\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
