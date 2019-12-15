@@ -1,0 +1,7 @@
+class GraphicPrimitiveFactory
+{
+public:
+	
+private:
+
+};

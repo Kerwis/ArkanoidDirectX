@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.h"
 #include "GameTimer.h"
+#include "Game.h"
 
 class App
 {
@@ -18,5 +19,6 @@ private:
 	//main frame
 	void DoFrame();
 	Window wnd;
+	std::unique_ptr<Game> game;
 	GameTimer timer;
 };

@@ -14,8 +14,9 @@ public:
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 	static std::optional<int> ProcessMessages();
-	Keyboard kbd;
+	
 	Graphics& Gfx();
+	std::shared_ptr<Keyboard> GetKeyboardPointer();
 
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
@@ -25,6 +26,7 @@ private:
 	int height;
 	HWND hWnd;
 	std::unique_ptr<Graphics> pGfx;
+	std::shared_ptr<Keyboard> kbd;
 
 	class WindowClass
 	{

@@ -25,7 +25,8 @@ Window::Window(int width, int height, LPCWSTR name) noexcept
     // newly created windows start off as hidden
     ShowWindow(hWnd, SW_SHOWDEFAULT);
     // create graphics object
-    pGfx = std::make_unique<Graphics>(hWnd);
+    pGfx = std::make_unique<Graphics>(hWnd, width, height);
+    kbd = std::make_shared<Keyboard>();
 }
 
 Window::~Window()
@@ -81,6 +82,11 @@ Graphics& Window::Gfx()
     return *pGfx;
 }
 
+std::shared_ptr<Keyboard> Window::GetKeyboardPointer()
+{
+    return kbd;
+}
+
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
     //std::string stemp;
@@ -101,11 +107,11 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
         //After hold key autorepete prevent (optional)
         if (!(lParam & 0x40000000))//mask for bit 30
         {
-            kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
+            kbd->OnKeyPressed(static_cast<unsigned char>(wParam));
         }
         break;
     case WM_KEYUP:
-        kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
+        kbd->OnKeyReleased(static_cast<unsigned char>(wParam));
         break;
     }
 
