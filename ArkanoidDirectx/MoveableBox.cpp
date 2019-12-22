@@ -3,4 +3,5 @@
 MoveableBox::MoveableBox(Graphics& gfx)
 	: Box(gfx)
 {
+
 }

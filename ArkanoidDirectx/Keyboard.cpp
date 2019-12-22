@@ -5,6 +5,11 @@ bool Keyboard::KeyIsPressed(unsigned char keycode) const noexcept
 	return keyStates[keycode];
 }
 
+void Keyboard::Reset()
+{
+	keyStates.reset();
+}
+
 void Keyboard::OnKeyPressed(unsigned char keycode) noexcept
 {
 	keyStates[keycode] = true;

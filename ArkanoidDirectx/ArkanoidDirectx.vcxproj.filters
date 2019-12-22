@@ -51,9 +51,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicPrimitiveFactory.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClCompile>
     <ClCompile Include="Bindable.cpp">
       <Filter>Pliki źródłowe\Bindable</Filter>
     </ClCompile>
@@ -92,6 +89,33 @@
     </ClCompile>
     <ClCompile Include="MoveableBox.cpp">
       <Filter>Pliki źródłowe\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Plate.cpp">
+      <Filter>Pliki źródłowe\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyBinding.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerBoard.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalControl.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkControl.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +182,45 @@
     <ClInclude Include="MoveableBox.h">
       <Filter>Pliki nagłówkowe\Drawable</Filter>
     </ClInclude>
+    <ClInclude Include="Plate.h">
+      <Filter>Pliki nagłówkowe\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Utiles.h">
+      <Filter>Pliki nagłówkowe\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyBinding.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="headers.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerBoard.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerControl.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalControl.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkControl.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Pliki nagłówkowe\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
@@ -166,5 +229,10 @@
     <FxCompile Include="VertexShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Dialogbox.rc">
+      <Filter>Pliki zasobów</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

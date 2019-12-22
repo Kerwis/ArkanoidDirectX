@@ -1,22 +1,34 @@
 #pragma once
-#include <windows.h>    // include the basic windows header file
-#include <windowsx.h>
 #include "Keyboard.h"
 #include "Graphics.h"
+#include "Menu.h"
+#include "Server.h"
 #include <optional>
 #include <memory>
+#include "resource.h"
 
 class Window
 {
 public:
-	Window(int width, int height, LPCWSTR name) noexcept;
+	friend class Server;
+
+	Window(int width, int height, LPCSTR name) noexcept;
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 	static std::optional<int> ProcessMessages();
 	
-	Graphics& Gfx();
+	void SetIPAddress(std::string ipaddress);
+	void SetMenuState(Menu::GameState gameState);
+
+	void ShowIPDialog(DLGPROC IPAdressproc);
+	HWND GetWindow();
+
+	Menu::GameState GetMenuState();
+	Graphics& GetGfx();
 	std::shared_ptr<Keyboard> GetKeyboardPointer();
+
+	
 
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
@@ -24,15 +36,17 @@ private:
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	int width;
 	int height;
-	HWND hWnd;
 	std::unique_ptr<Graphics> pGfx;
 	std::shared_ptr<Keyboard> kbd;
+	std::shared_ptr<Menu> menu;
+	HWND hWnd;
+	HWND ipAdressDlg;
 
 	class WindowClass
 	{
 
 	public:
-		static const LPCWSTR GetName() noexcept;
+		static const LPCSTR GetName() noexcept;
 		static HINSTANCE GetInstance() noexcept;
 
 	private:
@@ -40,7 +54,7 @@ private:
 		~WindowClass();
 		WindowClass(const WindowClass&) = delete;
 		WindowClass& operator=(const WindowClass&) = delete;
-		static constexpr const LPCWSTR wndClassName = L"Arkanoid";
+		static constexpr const LPCSTR wndClassName = "Arkanoid";
 		static WindowClass wndClass;
 		HINSTANCE hInst;
 	};

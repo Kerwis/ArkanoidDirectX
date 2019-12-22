@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
 #include "MoveableBox.h"
-#include "Keyboard.h"
+#include "PlayerControl.h"
 
 class Player : public MoveableBox
 {
 public:
-	Player(Graphics& gfx, std::shared_ptr<Keyboard> input);
+
+	Player(Vector2* ppos, Graphics& gfx, std::shared_ptr<PlayerControl> input);
 	~Player()=default;
 	Player(const Player&) = delete;
 	Player& operator=(const Player&) = delete;
@@ -14,10 +16,8 @@ public:
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
 	void CheckBounce(Vector2 bounds);
-	Vector2 GetPos();
-	float GetSize();
+	Vector2 GetSpeed();
 private:
-	float size = 5;
-
-	std::shared_ptr<Keyboard> kbd;
+	float maxSpeed = 15;
+	std::shared_ptr<PlayerControl> control;
 };

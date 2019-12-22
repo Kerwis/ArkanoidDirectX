@@ -1,7 +1,8 @@
 #pragma once
 #include "Graphics.h"
-#include "Player.h"
-#include "Ball.h"
+#include "PlayerBoard.h"
+#include "LocalControl.h"
+#include "NetworkControl.h"
 
 class Game
 {
@@ -13,11 +14,16 @@ public:
 
 	void Update(float dt) noexcept;
 	void Draw(Graphics& gfx) const noexcept;
+
 	Vector2 GetBounds();
-
-	std::unique_ptr<Player> player;
-	std::unique_ptr<Ball> ball;
-
+	bool IsStart();
+	void StartSingleGame(std::shared_ptr<BoardInfo> pi, Graphics& gfx);
+	void StartMultiGame(std::shared_ptr<BoardInfo> pmypi, std::shared_ptr<BoardInfo> popi, Graphics& gfx);
 private:
+	std::unique_ptr<PlayerBoard> playerOne;
+	std::unique_ptr<PlayerBoard> playerTwo;
+	std::shared_ptr<Keyboard> kbd;
+	bool isStart;
+	bool isMulti;
 	Vector2 bounds = { 30, 25 };
 };

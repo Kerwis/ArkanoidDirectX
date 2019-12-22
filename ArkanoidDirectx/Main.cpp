@@ -1,4 +1,5 @@
 #include "App.h"
+#include <comdef.h>
 
 // the WindowProc function prototype
 LRESULT CALLBACK WindowProc(HWND hWnd,
@@ -16,13 +17,17 @@ int WINAPI WinMain(HINSTANCE hInstance,
     {
         return App{}.Go();
     }
+    catch (const _com_error & e)
+    {
+        MessageBox(nullptr, e.Source(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
+    }
     catch (std::exception& e)
     {
-        MessageBoxA(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
     }
     catch (...)
     {
-        MessageBoxA(nullptr, "Upss", "Unknow Exception", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, "Upss", "Unknow Exception", MB_OK | MB_ICONEXCLAMATION);
     }
     return -1;
 }

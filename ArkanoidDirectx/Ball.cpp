@@ -1,41 +1,84 @@
 #include "Ball.h"
 
-Ball::Ball(Graphics& gfx)
-	: MoveableBox(gfx)
+Ball::Ball(Vector2* pos, Vector2 targetSpeed, Vector2 targetSize, std::shared_ptr<PlayerControl> input, Graphics& gfx)
+	:control(input),  MoveableBox(gfx)
 {
-	speed = { 0,-5 };
+	size = targetSize;
+	speed = targetSpeed;
+	pposition = pos;
+	startPos = *pos;
 }
 
-void Ball::CheckBounce(Vector2 pos, float size, Vector2 wall)
+void Ball::CheckBounce(Player& player, Vector2 wall)
 {
-	//Deck surface
-	if (std::abs(pos.y+1-position.y) < 0.05 // y pos
-		&& position.x > pos.x - size && position.x < pos.x + size)// x pos
+	if (!(control->Local()))
+		return;
+	Vector2 pos = player.GetPos();
+	Vector2 pSize = player.GetSize();
+	Vector2 podSpeed = player.GetSpeed();
+
+	//Pod surface
+	if (pos.y + pSize.y >= pposition->y - size.y && pos.y - pSize.y < pposition->y + size.y// y pos
+		&& pposition->x +size.x > pos.x - pSize.x && pposition->x - size.x < pos.x + pSize.x)// x pos
 	{
-		speed.y *= -1;
+		pposition->y = pos.y + pSize.y + size.y;
+		BounceUp();
+		//cool
+		speed.x += podSpeed.x * 0.1f;
 	}
 
 	//Wall
-	if (position.x < -wall.x || position.x > wall.x)
+	if (pposition->x < -wall.x)
 	{
-		speed.x * -1;
+		BounceRight();
 	}
-	if (position.y < -wall.y)
+	if (pposition->x > wall.x)
 	{
-		position.y = 0;
+		BounceLeft();
 	}
-	if (position.y > 1)
+	if (pposition->y < wall.y)
 	{
-		speed.y *= -1;
+		*pposition = startPos;
+	}
+	if (pposition->y > 0)
+	{
+		BounceDown();
 	}
 }
 
 void Ball::Update(float dt) noexcept
 {
-	position += speed * dt;
+	control->UpdateBall(pposition, speed, dt);
 }
 
-DirectX::XMMATRIX Ball::GetTransformXM() const noexcept
+void Ball::BounceUp()
 {
-	return DirectX::XMMatrixTranslation(position.x, position.y, 40.0f);
+	if (speed.y < 0)
+	{
+		speed.y *= -1;
+	}
+}
+
+void Ball::BounceDown()
+{
+	if (speed.y > 0)
+	{
+		speed.y *= -1;
+	}
+}
+
+void Ball::BounceLeft()
+{
+	if (speed.x > 0)
+	{
+		speed.x *= -1;
+	}
+}
+
+void Ball::BounceRight()
+{
+	if (speed.x < 0)
+	{
+		speed.x *= -1;
+	}
 }

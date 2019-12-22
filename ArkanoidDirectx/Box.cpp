@@ -3,6 +3,7 @@
 
 Box::Box(Graphics& gfx)
 {
+	pposition = &position;
 	struct Vertex
 	{
 		struct
@@ -83,6 +84,15 @@ void Box::Update(float dt) noexcept
 
 DirectX::XMMATRIX Box::GetTransformXM() const noexcept
 {
-	return DirectX::XMMatrixTranslation(10, 0.0f, 0.0f) *
-		DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+	return DirectX::XMMatrixTranslation(pposition->x, pposition->y, 50.0f);
+}
+
+Vector2 Box::GetSize()
+{
+	return size;
+}
+
+Vector2 Box::GetPos()
+{
+	return *pposition;
 }

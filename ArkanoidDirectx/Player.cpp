@@ -1,48 +1,29 @@
 #include "Player.h"
 
-Player::Player(Graphics& gfx, std::shared_ptr<Keyboard> input)
-	: MoveableBox(gfx), kbd(input)
+Player::Player(Vector2* ppos, Graphics& gfx, std::shared_ptr<PlayerControl> input)
+	: MoveableBox(gfx), control(input)
 {
-	position = { 0,-20 };
-	speed = { 15,0 };
+	pposition = ppos;
+	size = { 5, 1 };
 }
 
 void Player::Update(float dt) noexcept
 {
-	if (kbd->KeyIsPressed(0x41))
-	{
-		position.x -= dt * speed.x;
-	}
-	if (kbd->KeyIsPressed(0x44))
-	{
-		position.x += dt * speed.x;
-	}
-	if (kbd->KeyIsPressed(0x57))
-	{
-		speed.x += 1;
-	}
-	if (kbd->KeyIsPressed(0x53))
-	{
-		speed.x -= 1;
-	}
+	control->UpdatePositionAndSpeed(pposition, &speed, &maxSpeed, dt);
+	//position.x += dt * speed.x;
 }
 
 DirectX::XMMATRIX Player::GetTransformXM() const noexcept
 {
-	return DirectX::XMMatrixScaling(size, 1, 2) * DirectX::XMMatrixTranslation(position.x, position.y, 40.0f);
+	return DirectX::XMMatrixScaling(size.x, size.y, 2) * Box::GetTransformXM();
 }
 
 void Player::CheckBounce(Vector2 bounds)
 {
-	position.x = std::clamp(position.x, -bounds.x, bounds.x);
+	pposition->x = std::clamp(pposition->x, -bounds.x + size.x, bounds.x - size.x);
 }
 
-Vector2 Player::GetPos()
+Vector2 Player::GetSpeed()
 {
-	return position;
-}
-
-float Player::GetSize()
-{
-	return size;
+	return speed;
 }

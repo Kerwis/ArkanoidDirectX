@@ -1,7 +1,0 @@
-class GraphicPrimitiveFactory
-{
-public:
-	
-private:
-
-};

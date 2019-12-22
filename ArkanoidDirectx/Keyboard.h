@@ -12,6 +12,7 @@ public:
 
 	//key
 	bool KeyIsPressed(unsigned char keycode) const noexcept;
+	void Reset();
 private:
 	void OnKeyPressed(unsigned char keycode) noexcept;
 	void OnKeyReleased(unsigned char keycode) noexcept;

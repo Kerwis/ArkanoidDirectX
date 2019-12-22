@@ -1,12 +1,12 @@
 #include "Window.h"
 
-Window::Window(int width, int height, LPCWSTR name) noexcept
+Window::Window(int width, int height,LPCSTR name) noexcept
     :
     width(width),
     height(height)
 {
 
-    RECT wr = { 100, 100, width, height };   
+    RECT wr = { 0, 0, width, height };   
     AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);    // adjust the size
 
     // create the window and use the result as the handle
@@ -14,8 +14,8 @@ Window::Window(int width, int height, LPCWSTR name) noexcept
         WindowClass::GetName(),    // name of the window class
         name,   // title of the window
         WS_OVERLAPPEDWINDOW,    // window style
-        CW_USEDEFAULT,    // x-position of the window
-        CW_USEDEFAULT,    // y-position of the window
+        100,    // x-position of the window
+        100,    // y-position of the window
         wr.right - wr.left,    // width of the window
         wr.bottom - wr.top,    // height of the window
         NULL, NULL, //Not used
@@ -27,6 +27,7 @@ Window::Window(int width, int height, LPCWSTR name) noexcept
     // create graphics object
     pGfx = std::make_unique<Graphics>(hWnd, width, height);
     kbd = std::make_shared<Keyboard>();
+    menu = std::make_unique<Menu>(width, height);
 }
 
 Window::~Window()
@@ -77,7 +78,25 @@ std::optional<int> Window::ProcessMessages()
     return {};
 }
 
-Graphics& Window::Gfx()
+void Window::SetIPAddress(std::string ipaddress)
+{
+    menu->SetIPAddress(ipaddress);
+}
+
+void Window::SetMenuState(Menu::GameState gameState)
+{
+    menu->SetState(gameState);
+    //menu->Show(hWnd);
+    RedrawWindow(hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE);
+    //bool repaint = UpdateWindow(hWnd);
+}
+
+Menu::GameState Window::GetMenuState()
+{
+    return menu->GetState();
+}
+
+Graphics& Window::GetGfx()
 {
     return *pGfx;
 }
@@ -89,7 +108,6 @@ std::shared_ptr<Keyboard> Window::GetKeyboardPointer()
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-    //std::string stemp;
     // sort through and find what code to run for the message given
     switch (msg)
     {
@@ -100,8 +118,11 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
         PostQuitMessage(0);
         return 0;
         break;
+    case WM_PAINT:
+        menu->Show(hWnd);
+        break;
     case WM_KILLFOCUS:
-
+        kbd->Reset();
             break;
     case WM_KEYDOWN:
         //After hold key autorepete prevent (optional)
@@ -117,8 +138,18 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
     // Handle any messages the switch statement didn't
     return DefWindowProc(hWnd, msg, wParam, lParam);
+}  
+
+void Window::ShowIPDialog(DLGPROC IPAdressproc)
+{
+    ipAdressDlg = CreateDialog(WindowClass::GetInstance(), MAKEINTRESOURCE(IDD_DIALOGBAR), hWnd, IPAdressproc);
+    ShowWindow(ipAdressDlg, SW_SHOW);
 }
 
+HWND Window::GetWindow()
+{
+    return hWnd;
+}
 
 Window::WindowClass Window::WindowClass::wndClass;
 
@@ -152,7 +183,7 @@ Window::WindowClass::~WindowClass()
     UnregisterClass(wndClassName, GetInstance());
 }
 
-const LPCWSTR Window::WindowClass::GetName() noexcept
+const LPCSTR Window::WindowClass::GetName() noexcept
 {
     return wndClassName;
 }
