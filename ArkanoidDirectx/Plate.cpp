@@ -1,8 +1,8 @@
 #include "Plate.h"
 #include <math.h>
 
-Plate::Plate(Graphics& gfx, Vector2 pos)
-	: Box(gfx)
+Plate::Plate(Graphics& gfx, Vector2 pos, int index)
+	: id(index), Box(gfx)
 {
 	*pposition = pos;
 }
@@ -38,4 +38,9 @@ bool Plate::CheckHit(Ball& ball)
 		return true;
 	}
 	return false;
+}
+
+int Plate::GetIndex()
+{
+	return id;
 }

@@ -53,6 +53,10 @@ DWORD WINAPI Client::WaitAndRun(void* parg)
     {
         //TODO add timeout for repete message
         message = std::to_string(ci->pmypi->playerPosition.x) + ";" + std::to_string(ci->pmypi->ballPosition.x) + ";" + std::to_string(ci->pmypi->ballPosition.y) + ";";
+        for (int i = 0; i < 20; i++)
+        {
+            message += ci->pmypi->plates[i].to_string() + ",";
+        }
         
         iResult = send(ci->ConnectSocket, message.c_str(), recvbuflen, 0);
         //TODO Handle errors
@@ -70,6 +74,12 @@ DWORD WINAPI Client::WaitAndRun(void* parg)
 
         ptr = strtok_s(NULL, ";", &next_token);
         ci->popi->ballPosition.y = std::stof(ptr) * -1;
+
+        for (int i = 0; i < 20; i++)
+        {
+            ptr = strtok_s(NULL, ",", &next_token);
+            ci->popi->plates[i] = std::bitset<10>(std::string(ptr));
+        }
     }
 
     return 0;
@@ -181,7 +191,10 @@ INT_PTR CALLBACK Client::IPAdressproc(HWND hDlg, UINT message, WPARAM wParam, LP
             (WPARAM)IDCANCEL,
             (LPARAM)0);
 
-        return TRUE;
+        SetFocus(GetDlgItem(hDlg, IDC_EDIT1));
+        SendMessage(GetDlgItem(hDlg, IDC_EDIT1), EM_SETSEL, 0, -1);
+
+        return FALSE;
 
     case WM_COMMAND:
         // Set the default push button to "OK" when the user enters text. 
@@ -277,7 +290,7 @@ int Client::valid_digit(char* ip_str)
 /* return 1 if IP string is valid, else return 0 */
 int Client::is_valid_ip(char* ip_str)
 {
-    int i, num, dots = 0;
+    int num, dots = 0;
     char* ptr;
     char* next_token=NULL;
 

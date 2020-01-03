@@ -149,6 +149,13 @@ DWORD WINAPI Server::RunServer(void* parg)
 
     hConnectThread = CreateThread(NULL, 0, ConnectPlayer, psi, 0, &dwConnectThreadId);
 
+    if (hConnectThread == NULL)
+    {
+        std::string message = "Error: " + GetLastError();
+        MessageBox(psi->hWnd, errorMessage.c_str(), "Error", MB_OK);
+        return 1;
+    }
+
     WaitForSingleObject(hConnectThread, INFINITE);
 
     CloseHandle(hConnectThread);
@@ -220,6 +227,7 @@ DWORD WINAPI Server::BounceMessage(void* parg)
             return 1;
         }
     }
+    return 0;
 }
 
 bool Server::ServerRun()

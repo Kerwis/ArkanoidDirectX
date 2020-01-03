@@ -5,7 +5,7 @@ App::App()
 	wnd(windowWidth, windowHeight, WindowName)
 {
 
-	game = std::make_unique<Game>(wnd.GetGfx(), wnd.GetKeyboardPointer());
+	game = std::make_unique<Game>(wnd.GetGfx(), wnd.GetKeyboardPointer(), boardWidth, boardHeight);
 	keys = std::make_unique<KeyBinding>();
 
 	wnd.GetGfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.0f));
@@ -61,7 +61,7 @@ void App::DoSingleGameFrame()
 	wnd.GetGfx().ClearBuffer(0.0, 0.2, 0.4);
 
 	auto dt = timer.Mark();
-	game->Update(dt);
+	game->Update(dt, wnd.GetWindow());
 	game->Draw(wnd.GetGfx());
 
 	wnd.GetGfx().EndFrame();

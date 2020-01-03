@@ -12,6 +12,8 @@ class App
 private:
 	int windowWidth = 800;
 	int windowHeight = 600;
+	int boardWidth = 20;
+	int boardHeight = 10;
 	const LPCSTR WindowName = "Arkanoid";
 
 public:

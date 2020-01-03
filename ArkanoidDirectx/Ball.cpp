@@ -19,7 +19,7 @@ void Ball::CheckBounce(Player& player, Vector2 wall)
 
 	//Pod surface
 	if (pos.y + pSize.y >= pposition->y - size.y && pos.y - pSize.y < pposition->y + size.y// y pos
-		&& pposition->x +size.x > pos.x - pSize.x && pposition->x - size.x < pos.x + pSize.x)// x pos
+		&& pposition->x + size.x > pos.x - pSize.x && pposition->x - size.x < pos.x + pSize.x)// x pos
 	{
 		pposition->y = pos.y + pSize.y + size.y;
 		BounceUp();
@@ -28,11 +28,11 @@ void Ball::CheckBounce(Player& player, Vector2 wall)
 	}
 
 	//Wall
-	if (pposition->x < -wall.x)
+	if (pposition->x - size.x < -wall.x)
 	{
 		BounceRight();
 	}
-	if (pposition->x > wall.x)
+	if (pposition->x + size.x > wall.x)
 	{
 		BounceLeft();
 	}
@@ -40,7 +40,7 @@ void Ball::CheckBounce(Player& player, Vector2 wall)
 	{
 		*pposition = startPos;
 	}
-	if (pposition->y > 0)
+	if (pposition->y + size.y > -0.75f)
 	{
 		BounceDown();
 	}

@@ -35,8 +35,8 @@ private:
 	static int is_valid_ip(char* ip_str);
 	static int valid_digit(char* ip_str);
 
-	DWORD   dwRunThreadId;
-	HANDLE  hRunThread;
+	DWORD   dwRunThreadId = 0;
+	HANDLE  hRunThread = nullptr;
 	//ipget
 	static INT_PTR CALLBACK IPAdressproc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 };
