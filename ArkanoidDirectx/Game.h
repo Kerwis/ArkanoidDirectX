@@ -12,7 +12,7 @@ public:
 	Game(const Game&) = delete;
 	Game& operator=(const Game&) = delete;
 
-	void Update(float dt, HWND hWnd) noexcept;
+	bool Update(float dt, HWND hWnd) noexcept;
 	void Draw(Graphics& gfx) const noexcept;
 
 	Vector2 GetBounds();

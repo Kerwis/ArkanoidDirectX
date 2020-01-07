@@ -6,6 +6,12 @@ Client::Client(HWND hWnd)
     ci.hWnd = hWnd;
 }
 
+Client::~Client()
+{
+    ipaddressloaded = false;
+    ci.cleanup = true;
+}
+
 void Client::WaitForIPAddressAndRunServer()
 {
     hRunThread = CreateThread(NULL, 0, WaitAndRun, &ci, 0, &dwRunThreadId);
@@ -28,7 +34,7 @@ DWORD WINAPI Client::WaitAndRun(void* parg)
         //Close wait for ip thread
         CloseHandle(hIPThread);
     }
-    
+
     int iResult;
     char recvbuf[DEFAULT_BUFLEN];
     int recvbuflen = DEFAULT_BUFLEN;
@@ -51,34 +57,72 @@ DWORD WINAPI Client::WaitAndRun(void* parg)
     std::string message;
     while (iResult > 0)
     {
-        //TODO add timeout for repete message
-        message = std::to_string(ci->pmypi->playerPosition.x) + ";" + std::to_string(ci->pmypi->ballPosition.x) + ";" + std::to_string(ci->pmypi->ballPosition.y) + ";";
-        for (int i = 0; i < 20; i++)
+        try
         {
-            message += ci->pmypi->plates[i].to_string() + ",";
+            if (ci->cleanup)
+                return 2;
+
+            ci->pmypi->lock = true;
+
+            //TODO add timeout for repete message
+            message = std::to_string(ci->pmypi->playerPosition.x) + ";" + std::to_string(ci->pmypi->ballPosition.x) + ";" + std::to_string(ci->pmypi->ballPosition.y) + ";";
+            for (int i = 0; i < 20; i++)
+            {
+                message += ci->pmypi->plates[i].to_string() + ",";
+            }
+
+            iResult = send(ci->ConnectSocket, message.c_str(), recvbuflen, 0);
+            if (iResult == SOCKET_ERROR && !ci->cleanup)
+            {
+                std::string errorMessage = "Send failed with error: " + std::to_string(WSAGetLastError());
+                MessageBox(ci->hWnd, errorMessage.c_str(), "Error", MB_OK);
+                closesocket(ci->ConnectSocket);
+                WSACleanup();
+                return 1;
+            }
+
+            ci->pmypi->lock = false;
+
+            iResult = recv(ci->ConnectSocket, recvbuf, recvbuflen, 0);
+            if (iResult == SOCKET_ERROR && !ci->cleanup)
+            {
+                std::string errorMessage = "Send failed with error: " + std::to_string(WSAGetLastError());
+                MessageBox(ci->hWnd, errorMessage.c_str(), "Error", MB_OK);
+                closesocket(ci->ConnectSocket);
+                WSACleanup();
+                return 1;
+            }
+
+            if (ci->cleanup)
+                return 2;
+
+            ci->popi->lock = true;
+
+            char* ptr;
+            char* next_token = NULL;
+
+            ptr = strtok_s(recvbuf, ";", &next_token);
+            ci->popi->playerPosition.x = std::stof(ptr);
+
+            ptr = strtok_s(NULL, ";", &next_token);
+            ci->popi->ballPosition.x = std::stof(ptr);
+
+            ptr = strtok_s(NULL, ";", &next_token);
+            ci->popi->ballPosition.y = std::stof(ptr) * -1;
+
+            for (int i = 0; i < 20; i++)
+            {
+                ptr = strtok_s(NULL, ",", &next_token);
+                ci->popi->plates[i] = std::bitset<10>(std::string(ptr));
+            }
+            ci->popi->lock = false;
         }
-        
-        iResult = send(ci->ConnectSocket, message.c_str(), recvbuflen, 0);
-        //TODO Handle errors
-        iResult = recv(ci->ConnectSocket, recvbuf, recvbuflen, 0);
-        //TODO Handle errors
-
-        char* ptr;
-        char* next_token = NULL;
-
-        ptr = strtok_s(recvbuf, ";", &next_token);
-        ci->popi->playerPosition.x = std::stof(ptr);
-
-        ptr = strtok_s(NULL, ";", &next_token);
-        ci->popi->ballPosition.x = std::stof(ptr);
-
-        ptr = strtok_s(NULL, ";", &next_token);
-        ci->popi->ballPosition.y = std::stof(ptr) * -1;
-
-        for (int i = 0; i < 20; i++)
+        catch (const std::exception& e)
         {
-            ptr = strtok_s(NULL, ",", &next_token);
-            ci->popi->plates[i] = std::bitset<10>(std::string(ptr));
+            if (!ci->cleanup)
+            {
+                MessageBox(ci->hWnd, e.what(), "Error", MB_OK);
+            }
         }
     }
 
@@ -163,6 +207,11 @@ bool Client::JoinServer(ClientInfo* ci, std::string ipaddress)
     ci->connected = true;
 
 	return true;
+}
+
+void Client::Stop()
+{
+    ci.cleanup = true;
 }
 
 bool Client::ipaddressloaded = false;

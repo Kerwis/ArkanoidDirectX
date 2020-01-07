@@ -95,3 +95,8 @@ void PlayerBoard::Draw(Graphics& gfx) const noexcept
 		p->Draw(gfx);
 	}
 }
+
+bool PlayerBoard::IsBlock()
+{
+	return myInfo->lock;
+}

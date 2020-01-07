@@ -29,29 +29,48 @@ void Game::StartMultiGame(std::shared_ptr<BoardInfo> pmypi, std::shared_ptr<Boar
 	playerTwo = std::make_unique<PlayerBoard>(popi, -1, gfx, std::make_shared<NetworkControl>(popi), boardWidth, boardHeight);
 }
 
-void Game::Update(float dt, HWND hWnd) noexcept
+bool Game::Update(float dt, HWND hWnd) noexcept
 {
-	playerOneScore = playerOne->Update(dt);
-	if (isMulti)
+	if (isStart)
 	{
-		playerTwoScore = playerTwo->Update(dt);
+		playerOneScore = playerOne->Update(dt);
+		if (isMulti)
+		{
+			playerTwoScore = playerTwo->Update(dt);
+		}
+		if (playerOneScore.end || (isMulti && playerTwoScore.end))
+		{
+			if (playerOneScore.end && (isMulti && playerTwoScore.end))
+			{
+				//debug desynchron?
+				MessageBox(hWnd, "Desynchron", "Posible error", MB_OK);
+			}
+			if (playerOneScore.win)
+			{
+				MessageBox(hWnd, "You win!", "Congratulation!", MB_OK);
+			}
+			else
+			{
+				MessageBox(hWnd, "You lost", "Next time!", MB_OK);
+			}
+			isStart = false;
+		}
 	}
-	if (playerOneScore.end || (isMulti && playerTwoScore.end))
+	else
 	{
-		if (playerOneScore.end && (isMulti && playerTwoScore.end))
+		if (playerOne == nullptr && playerTwo == nullptr)
 		{
-			//debug desynchron?
-			MessageBox(hWnd, "Desynchron", "Posible error", MB_OK);
+			return false;
 		}
-		if (playerOneScore.win)
+		if (!playerOne->IsBlock() && !playerTwo->IsBlock())
 		{
-			MessageBox(hWnd, "You win!", "Congratulation!", MB_OK);
-		}
-		else
-		{
-			MessageBox(hWnd, "You lost", "Next time!", MB_OK);
+			playerOne.reset();
+			playerTwo.reset();
+			return false;
 		}
 	}
+
+	return true;
 }
 
 void Game::Draw(Graphics& gfx) const noexcept

@@ -7,7 +7,7 @@ class Client
 {
 public:
 	Client(HWND hWnd);
-	~Client() = default;
+	~Client();
 	Client(const Client&) = delete;
 	Client& operator=(const Client&) = delete;
 
@@ -15,6 +15,7 @@ public:
 	{
 		bool connected = false;
 		bool gameStart = false;
+		bool cleanup = false;
 		int playerID = -1;
 		std::shared_ptr<BoardInfo> pmypi;
 		std::shared_ptr<BoardInfo> popi;
@@ -25,6 +26,7 @@ public:
 	DLGPROC GetIPDialogProc();
 	static bool JoinServer(ClientInfo* ci, std::string ipaddress);
 	ClientInfo ci;
+	void Stop();
 private:
 
 	static DWORD WINAPI WaitAndRun(void* parg);

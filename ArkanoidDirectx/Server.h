@@ -15,7 +15,7 @@ public:
 	std::string CreateServer();
 	bool ServerReady();
 	bool ServerRun();
-
+	void Stop();
 private:
 
 	struct ServerInfo
@@ -23,6 +23,7 @@ private:
 		int playerConnected = 0;
 		bool serverRun = false;
 		bool serverReady = false;
+		bool cleanup = false;
 		int recivePlayer = -1;
 		SOCKET ClientSockets[MAX_PLAYERS] = { INVALID_SOCKET, INVALID_SOCKET };
 		SOCKET ListenSocket = INVALID_SOCKET;

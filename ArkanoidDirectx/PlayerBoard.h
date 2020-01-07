@@ -16,6 +16,7 @@ struct BoardInfo
 	std::bitset<10>  plates[20];
 	bool ready;
 	bool localControl;
+	bool lock = false;
 };
 
 struct Score
@@ -36,6 +37,7 @@ public:
 	void InitElements(float rotation, Graphics& gfx, std::shared_ptr<PlayerControl> input);
 	Score Update(float dt) noexcept;
 	void Draw(Graphics& gfx) const noexcept;
+	bool IsBlock();
 private:
 	std::unique_ptr<Player> player;
 	std::unique_ptr<Ball> ball;

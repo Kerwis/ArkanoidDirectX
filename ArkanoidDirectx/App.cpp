@@ -61,9 +61,33 @@ void App::DoSingleGameFrame()
 	wnd.GetGfx().ClearBuffer(0.0, 0.2, 0.4);
 
 	auto dt = timer.Mark();
-	game->Update(dt, wnd.GetWindow());
-	game->Draw(wnd.GetGfx());
-
+	if (game->Update(dt, wnd.GetWindow()))
+	{
+		game->Draw(wnd.GetGfx());
+		if (!game->IsStart())
+		{
+			if (server != nullptr)
+			{
+				server->Stop();
+			}
+			if (client != nullptr)
+			{
+				client->Stop();
+			}
+		}
+	}
+	else
+	{
+		if (server != nullptr)
+		{
+			server.reset();
+		}
+		if (client != nullptr)
+		{
+			client.reset();
+		}
+		wnd.SetMenuState(Menu::GameState::Menu);
+	}
 	wnd.GetGfx().EndFrame();
 }
 

@@ -9,8 +9,8 @@ Server::Server(HWND hWnd)
 
 Server::~Server()
 {
+    si.cleanup = true;
     closesocket(si.ListenSocket);
-    //TODO clenup threat and socet
     WSACleanup();
 }
 
@@ -120,8 +120,11 @@ DWORD WINAPI Server::ConnectPlayer(void* parg)
     // Accept a client socket
     while (psi->playerConnected < PLAYER_COUNT)
     {
+        if (psi->cleanup)
+            return 1;
+
         psi->ClientSockets[psi->playerConnected] = accept(psi->ListenSocket, NULL, NULL);
-        if (psi->ClientSockets[psi->playerConnected] == INVALID_SOCKET) {
+        if (psi->ClientSockets[psi->playerConnected] == INVALID_SOCKET && !psi->cleanup) {
             errorMessage = "Accept failed: " + std::to_string(WSAGetLastError());
             MessageBox(psi->hWnd, errorMessage.c_str(), "Error", MB_OK);
             closesocket(psi->ListenSocket);
@@ -181,7 +184,7 @@ DWORD WINAPI Server::RunServer(void* parg)
         info = std::to_string(i);
         int iSendResult = send(psi->ClientSockets[i], info.c_str(), (int)strlen(info.c_str()), 0);
 
-        if (iSendResult == SOCKET_ERROR) {            
+        if (iSendResult == SOCKET_ERROR && !psi->cleanup) {
             errorMessage = "Send failed with error: " + std::to_string(WSAGetLastError());
             MessageBox(psi->hWnd, errorMessage.c_str(), "Error", MB_OK);
             closesocket(psi->ClientSockets[i]);
@@ -207,7 +210,7 @@ DWORD WINAPI Server::BounceMessage(void* parg)
     {
         iResult = recv(psi->ClientSockets[reciveP], recvbuf, recvbuflen, 0);
 
-        if (iResult == SOCKET_ERROR) {
+        if (iResult == SOCKET_ERROR && !psi->cleanup) {
             errorMessage = "Recive failed with error: " + std::to_string(WSAGetLastError());
             MessageBox(psi->hWnd, errorMessage.c_str(), "Error", MB_OK);
             closesocket(psi->ClientSockets[reciveP]);
@@ -218,7 +221,7 @@ DWORD WINAPI Server::BounceMessage(void* parg)
 
         iResult = send(psi->ClientSockets[sendP], recvbuf, iResult, 0);
 
-        if (iResult == SOCKET_ERROR) {
+        if (iResult == SOCKET_ERROR && !psi->cleanup) {
             errorMessage = "Send failed with error: " + std::to_string(WSAGetLastError());
             MessageBox(psi->hWnd, errorMessage.c_str(), "Error", MB_OK);
             closesocket(psi->ClientSockets[reciveP]);
@@ -233,6 +236,11 @@ DWORD WINAPI Server::BounceMessage(void* parg)
 bool Server::ServerRun()
 {
     return si.serverRun;
+}
+
+void Server::Stop()
+{
+    si.cleanup = true;
 }
 
 bool Server::ServerReady()
